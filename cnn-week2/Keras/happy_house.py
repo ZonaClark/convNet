@@ -53,7 +53,6 @@ def HappyModel(input_shape):
     model -- a Model() instance in Keras
     """
     
-    ### START CODE HERE ###
     
     # Define the input placeholder as a tensor with shape input_shape. Think of this as your input image!
     X_input = Input(input_shape)
@@ -62,12 +61,20 @@ def HappyModel(input_shape):
     X = ZeroPadding2D((3, 3))(X_input)
 
     # CONV -> BN -> RELU Block applied to X
-    X = Conv2D(32, (7, 7), strides = (1, 1), name = 'conv0')(X)
+    X = Conv2D(6, (5, 5), strides = (1, 1), name = 'conv0')(X)
     X = BatchNormalization(axis = 3, name = 'bn0')(X)
     X = Activation('relu')(X)
 
     # MAXPOOL
-    X = MaxPooling2D((2, 2), name='max_pool')(X)
+    X = MaxPooling2D((2, 2), strides = (2, 2), name='max_pool0')(X)
+    
+    # CONV -> BN -> RELU Block applied to X
+    X = Conv2D(16, (5, 5), strides = (1, 1), name = 'conv1')(X)
+    X = BatchNormalization(axis = 3, name = 'bn1')(X)
+    X = Activation('relu')(X)
+
+    # MAXPOOL
+    X = MaxPooling2D((2, 2), strides = (2, 2), name='max_pool1')(X)
 
     # FLATTEN X (means convert it to a vector) + FULLYCONNECTED
     X = Flatten()(X)
@@ -75,14 +82,12 @@ def HappyModel(input_shape):
 
     # Create model. This creates your Keras model instance, you'll use this instance to train/test the model.
     model = Model(inputs = X_input, outputs = X, name='HappyModel')
-    
-    ### END CODE HERE ###
-    
+        
     return model
 
 happyModel = HappyModel(X_train.shape[1:])
 happyModel.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
-happyModel.fit(x = X_train, y = Y_train, epochs = 50, batch_size = 12)
+happyModel.fit(x = X_train, y = Y_train, epochs = 40, batch_size = 20)
 preds = happyModel.evaluate(x = X_test, y = Y_test)
 print()
 print ("Loss = " + str(preds[0]))
