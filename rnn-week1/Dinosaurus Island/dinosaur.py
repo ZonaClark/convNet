@@ -239,8 +239,6 @@ parameters = model(data, ix_to_char, char_to_ix)
 
 
 
-# Writing like Shakespeare
-
 
 
 
